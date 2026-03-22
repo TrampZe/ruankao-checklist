@@ -251,7 +251,7 @@
     <div id="taskContainer"></div>
 
     <button class="reset-btn" id="resetBtn">🔄 重置所有打卡数据</button>
-    <div class="footer-note">每天勾选“已完成”自动保存 · 数据存在此浏览器中</div>
+    <div class="footer-note">每天勾选“已完成”自动保存 · 打卡成功后自动跳转下一天</div>
 </div>
 
 <script>
@@ -423,13 +423,25 @@
             `;
             const checkBtn = document.getElementById('checkBtn');
             checkBtn.addEventListener('click', () => {
-                if (completedSet.has(currentDisplayDate)) {
+                // 记录点击前的状态
+                const wasChecked = completedSet.has(currentDisplayDate);
+                
+                if (wasChecked) {
+                    // 取消打卡：移除标记，不跳转
                     completedSet.delete(currentDisplayDate);
+                    saveCompleted();
+                    render();
                 } else {
+                    // 新打卡：添加标记
                     completedSet.add(currentDisplayDate);
+                    saveCompleted();
+                    // 自动跳转到下一天（如果存在）
+                    const currentIdx = ALL_DATES.indexOf(currentDisplayDate);
+                    if (currentIdx !== -1 && currentIdx + 1 < ALL_DATES.length) {
+                        currentDisplayDate = ALL_DATES[currentIdx + 1];
+                    }
+                    render();
                 }
-                saveCompleted();
-                render();
             });
         }
         
