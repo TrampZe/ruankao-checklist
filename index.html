@@ -2,479 +2,766 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>软考视频学习打卡 · 系统集成项目管理工程师</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>软考中级 · 系统集成项目管理工程师 | 一键打卡学习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        * {
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #f3f5f9;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            padding: 16px;
+            font-family: 'Inter', sans-serif;
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 20px;
         }
-        .container {
-            max-width: 600px;
-            width: 100%;
+        .container { max-width: 1000px; margin: 0 auto; }
+        .card {
             background: white;
-            border-radius: 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-            padding: 24px 20px;
-        }
-        h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 8px;
-        }
-        .subtitle {
-            color: #64748b;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-            border-left: 4px solid #3b82f6;
-            padding-left: 12px;
-        }
-        .progress-overall {
-            background: #e9eef4;
-            height: 18px;
-            border-radius: 40px;
-            margin: 16px 0 10px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            height: 100%;
-            width: 0%;
-            border-radius: 40px;
-            transition: width 0.3s ease;
-        }
-        .stats-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            color: #334155;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .phase-cards {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 28px;
-            flex-wrap: wrap;
-        }
-        .phase-card {
-            flex: 1;
-            min-width: 100px;
-            background: #f8fafc;
             border-radius: 24px;
-            padding: 14px 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .hero {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
             text-align: center;
-            border: 1px solid #e2e8f0;
         }
-        .phase-card.active {
-            border-color: #3b82f6;
-            background: #eff6ff;
+        .countdown { font-size: 44px; font-weight: 800; }
+        .exam-date { font-size: 14px; opacity: 0.85; margin-top: 8px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
         }
-        .phase-name {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #1e293b;
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 16px 8px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+        .stat-number { font-size: 28px; font-weight: 800; }
+        .stat-label { font-size: 12px; color: #475569; margin-top: 6px; }
+        .green { color: #10b981; }
+        .blue { color: #3b82f6; }
+        .orange { color: #f97316; }
+        .badge-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .badge {
+            background: #e2e8f0;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #475569;
+            opacity: 0.6;
+        }
+        .badge.unlocked {
+            background: #dcfce7;
+            color: #15803d;
+            opacity: 1;
+        }
+        .review-box {
+            background: #fef9e3;
+            border-left: 5px solid #f59e0b;
+        }
+        .review-title { font-weight: 700; margin-bottom: 10px; color: #b45309; }
+        .review-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .review-item {
+            background: #ffedd5;
+            padding: 4px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        /* 今日任务卡片 */
+        .today-card {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 1px solid #bae6fd;
+        }
+        .today-title {
+            font-size: 22px;
+            font-weight: 700;
             margin-bottom: 4px;
         }
-        .phase-dates {
-            font-size: 0.7rem;
-            color: #64748b;
-            margin-bottom: 8px;
+        .today-desc {
+            font-size: 13px;
+            color: #0369a1;
+            margin-bottom: 15px;
         }
-        .phase-progress-bg {
-            background: #cbd5e1;
-            height: 6px;
-            border-radius: 10px;
-            margin: 8px 0 4px;
+        .task-list {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 12px;
+            margin: 15px 0;
+        }
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .task-item:last-child { border: none; }
+        .task-name { font-size: 14px; font-weight: 500; flex: 2; }
+        .task-difficulty {
+            display: flex;
+            gap: 6px;
+            margin-right: 10px;
+        }
+        .difficulty-btn {
+            background: #f1f5f9;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        .difficulty-btn.active-easy { background: #d1fae5; color: #065f46; }
+        .difficulty-btn.active-medium { background: #fed7aa; color: #9a3412; }
+        .difficulty-btn.active-hard { background: #fee2e2; color: #b91c1c; }
+        .note-icon {
+            cursor: pointer;
+            font-size: 18px;
+            background: none;
+            border: none;
+            width: 32px;
+        }
+        .today-check {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .today-check:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .random-btn {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 6px 12px;
+            font-size: 12px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        /* 章节折叠 */
+        .chapter-group {
+            margin-bottom: 16px;
+            border-radius: 20px;
+            background: white;
             overflow: hidden;
         }
-        .phase-progress-fill {
-            background: #3b82f6;
-            height: 100%;
-            width: 0%;
-            border-radius: 10px;
+        .chapter-header {
+            background: #f8fafc;
+            padding: 14px 18px;
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
         }
-        .phase-count {
-            font-size: 0.7rem;
-            color: #475569;
-        }
-        .date-nav {
+        .chapter-stats { font-size: 12px; font-weight: normal; color: #3b82f6; }
+        .section-list { display: none; background: white; }
+        .section-list.open { display: block; }
+        .section-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin: 24px 0 16px;
-        }
-        .date-nav button {
-            background: white;
-            border: 1px solid #cbd5e1;
-            width: 42px;
-            height: 42px;
-            border-radius: 30px;
-            font-size: 1.2rem;
-            color: #334155;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-        }
-        .date-nav button:active {
-            background: #f1f5f9;
-            transform: scale(0.95);
-        }
-        .date-display {
-            font-weight: 600;
-            font-size: 1.2rem;
-            background: #f1f5f9;
-            padding: 8px 20px;
-            border-radius: 40px;
-            color: #0f172a;
-        }
-        .task-card {
-            background: #ffffff;
-            border-radius: 32px;
-            padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
-            border: 1px solid #e9eef2;
-            margin-bottom: 24px;
-        }
-        .task-date {
-            font-size: 1rem;
-            color: #3b82f6;
-            font-weight: 500;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
+            padding: 12px 18px;
+            border-bottom: 1px solid #f1f5f9;
+            flex-wrap: wrap;
             gap: 8px;
         }
-        .task-icon {
-            font-size: 1.3rem;
-        }
-        .task-desc {
-            font-size: 1.1rem;
-            line-height: 1.5;
-            color: #1e293b;
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
-        .check-area {
+        .section-name { flex: 2; font-size: 14px; font-weight: 500; }
+        .section-status {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            background: #e2e8f0;
             display: flex;
             align-items: center;
-            gap: 12px;
-            border-top: 1px dashed #cbd5e1;
-            padding-top: 18px;
-        }
-        .checkbox {
-            width: 26px;
-            height: 26px;
-            border-radius: 10px;
-            border: 2px solid #94a3b8;
-            background: white;
-            display: inline-flex;
-            align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: 0.1s;
-            font-size: 1.2rem;
-            color: white;
+            font-size: 12px;
         }
-        .checkbox.checked {
-            background: #3b82f6;
-            border-color: #3b82f6;
-            color: white;
+        .section-status.done { background: #10b981; color: white; }
+        .chart-container { height: 200px; margin-top: 10px; }
+        .note-history { max-height: 250px; overflow-y: auto; }
+        .note-entry {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 16px;
+            margin-bottom: 8px;
         }
-        .check-label {
-            font-size: 1rem;
-            font-weight: 500;
-            color: #334155;
-            flex: 1;
+        .note-title { font-weight: 600; font-size: 13px; }
+        .note-text { font-size: 12px; color: #475569; margin-top: 4px; }
+        .footer-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
         }
-        .reset-btn {
-            background: none;
-            border: 1px solid #e2e8f0;
-            padding: 12px 20px;
+        .btn {
+            background: white;
+            padding: 10px 20px;
             border-radius: 40px;
-            color: #64748b;
-            font-size: 0.9rem;
-            width: 100%;
-            margin-top: 20px;
+            font-size: 13px;
+            border: 1px solid #cbd5e1;
             cursor: pointer;
-            transition: 0.2s;
         }
-        .reset-btn:active {
-            background: #f1f5f9;
-        }
-        .footer-note {
-            font-size: 0.75rem;
-            color: #94a3b8;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .out-of-range {
-            text-align: center;
-            padding: 40px 0;
-            color: #94a3b8;
-            font-size: 1.1rem;
+        @media (max-width: 700px) {
+            .task-item { flex-wrap: wrap; }
+            .task-difficulty { order: 2; }
+            .note-icon { order: 3; }
         }
     </style>
 </head>
 <body>
-<div class="container" id="app">
-    <h1>📚 软考视频学习打卡</h1>
-    <div class="subtitle">系统集成项目管理工程师 · 视频精讲 + 复习冲刺</div>
-
-    <div class="progress-overall">
-        <div class="progress-fill" id="overallProgress" style="width:0%"></div>
-    </div>
-    <div class="stats-row">
-        <span>✅ 已完成 <span id="completedCount">0</span>/<span id="totalDays">0</span> 天</span>
-        <span>📅 <span id="startDateDisplay"></span> 至 <span id="endDateDisplay"></span></span>
+<div class="container">
+    <div class="card hero">
+        <div class="countdown" id="countdown">-- 天</div>
+        <div class="exam-date" id="examDate"></div>
+        <div style="font-size: 14px; margin-top: 10px;">系统集成项目管理工程师 · 一键打卡</div>
     </div>
 
-    <div class="phase-cards" id="phaseCards"></div>
-
-    <div class="date-nav">
-        <button id="prevDay" aria-label="前一天">←</button>
-        <span class="date-display" id="currentDateLabel">2026-03-23</span>
-        <button id="nextDay" aria-label="后一天">→</button>
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-number green" id="streak">0</div><div class="stat-label">连续打卡</div></div>
+        <div class="stat-card"><div class="stat-number blue" id="doneCount">0</div><div class="stat-label">已完成小节</div></div>
+        <div class="stat-card"><div class="stat-number orange" id="totalCount">0</div><div class="stat-label">总小节数</div></div>
+        <div class="stat-card"><div class="stat-number" id="reviewCount">0</div><div class="stat-label">待复习</div></div>
     </div>
 
-    <div id="taskContainer"></div>
+    <div class="badge-container">
+        <div class="badge" id="badge3">🔥 3天</div>
+        <div class="badge" id="badge7">🌟 7天</div>
+        <div class="badge" id="badge21">🏆 21天</div>
+        <div class="badge" id="badgeAll">📖 全章节</div>
+    </div>
 
-    <button class="reset-btn" id="resetBtn">🔄 重置所有打卡数据</button>
-    <div class="footer-note">每天勾选“已完成”自动保存 · 打卡成功后自动跳转下一天</div>
+    <div class="card review-box" id="reviewBox" style="display: none;">
+        <div class="review-title">📚 艾宾浩斯复习提醒</div>
+        <div class="review-list" id="reviewList"></div>
+    </div>
+
+    <!-- 今日一键打卡卡片 -->
+    <div class="card today-card" id="todayCard">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="today-title" id="todayTitle">DAY 01 - 整合管理</div>
+            <button class="random-btn" id="randomBtn">🎲 随机推荐</button>
+        </div>
+        <div class="today-desc" id="todayDesc">制定项目章程、项目管理计划...</div>
+        <div class="task-list" id="taskList"></div>
+        <textarea id="globalNote" placeholder="📝 今日整体笔记（可选）" style="width:100%; padding:10px; border-radius:12px; border:1px solid #cbd5e1; margin-bottom:10px;" rows="2"></textarea>
+        <button class="today-check" id="checkBtn">✅ 一键完成今日打卡</button>
+    </div>
+
+    <!-- 章节目录（折叠） -->
+    <div id="chaptersContainer"></div>
+
+    <div class="card">
+        <div style="font-weight: 700; margin-bottom: 12px;">📈 每日学习进度</div>
+        <div class="chart-container"><canvas id="progressChart"></canvas></div>
+    </div>
+
+    <div class="card">
+        <div style="font-weight: 700; margin-bottom: 12px;">📝 最近笔记</div>
+        <div id="noteHistory" class="note-history"></div>
+    </div>
+
+    <div class="footer-buttons">
+        <button class="btn" id="exportBtn">📤 导出数据</button>
+        <button class="btn" id="resetBtn">🔄 重置所有进度</button>
+    </div>
+    <div style="text-align: center; font-size: 11px; color: #94a3b8; margin: 24px 0;">数据自动保存在浏览器中</div>
 </div>
 
 <script>
-(function() {
-    // ========== 配置 ==========
-    const START_DATE = '2026-03-23';   // 从明天开始
-    const END_DATE = '2026-05-22';     // 考前一天
-    
-    const TOPICS = [
-        "项目管理概论", "整合管理", "范围管理", "进度管理", "成本管理",
-        "质量管理", "资源管理", "风险管理", "采购管理", "监理基础知识",
-        "法律法规和标准规范", "职业道德规范", "信息化发展", "信息技术发展",
-        "信息技术服务", "信息系统架构", "软件工程", "数据工程",
-        "软硬件系统集成", "信息安全工程", "案例分析"
+    // ---------- 真实章节目录 ----------
+    const chaptersData = [
+        { chap: "2. 整合管理", sections: ["2.1 制定项目章程","2.2 制定项目管理计划","2.3 指导与管理项目工作","2.4 管理项目知识","2.5 监控项目工作","2.6 实施整体变更控制","2.7 结束项目或阶段"] },
+        { chap: "3. 范围管理", sections: ["3.1 规划范围管理","3.2 收集需求","3.3 定义范围","3.4 创建WBS","3.5 确认范围","3.6 控制范围"] },
+        { chap: "4. 进度管理", sections: ["4.1 规划进度管理","4.2 定义活动","4.3 排列活动顺序","4.4 估算活动持续时间","4.5 制定进度计划"] },
+        { chap: "5. 成本管理", sections: ["5.1 规划成本管理","5.2 估算成本","5.3 制定预算","5.4 控制成本"] },
+        { chap: "6. 质量管理", sections: ["6.1 规划质量管理","6.2 管理质量","6.3 控制质量"] },
+        { chap: "7. 资源管理", sections: ["7.1 规划资源管理","7.2 估算活动资源","7.3 获取资源","7.4 建设团队","7.5 管理团队","7.6 控制资源"] },
+        { chap: "8. 风险管理", sections: ["8.1 规划风险管理","8.2 识别风险","8.3 实施定性风险分析","8.4 实施定量风险分析","8.5 规划风险应对","8.6 实施风险应对","8.7 监督风险"] },
+        { chap: "9. 采购管理", sections: ["9.1 规划采购管理","9.2 实施采购","9.3 控制采购"] },
+        { chap: "10. 沟通管理", sections: ["10.1 规划沟通管理","10.2 管理沟通","10.3 监督沟通"] },
+        { chap: "11. 干系人管理", sections: ["11.1 识别干系人","11.2 规划干系人参与","11.3 管理干系人参与","11.4 监督干系人参与"] },
+        { chap: "12. 组织保障", sections: ["12.1 信息和文档管理","12.2 配置管理","12.3 配置管理活动","12.4 变更管理","12.5 本章小结"] },
+        { chap: "13. 监理基础知识", sections: ["13.1 监理的意义和作用","13.2 监理相关概念","13.3 监理依据","13.4 监理内容","13.5 监理要素","13.6 本章小结"] },
+        { chap: "14. 法律法规和标准规范", sections: ["14.1 法律法规","14.2 法律体系","14.3 法的效力","14.4 法律法规的体系及层级","14.5 系统集成项目管理常用法律","14.6 标准化基础知识","14.7 本章小结"] },
+        { chap: "15. 职业道德规范", sections: ["15.1 基本概念","15.2 项目管理工程师岗位职责","15.3 项目经理对项目管理的责任","15.4 本章小结"] },
+        { chap: "16. 信息化发展", sections: ["16.1 信息与信息化","16.2 现代化基础设施","16.3 产业现代化","17.4 信息安全","17.5 大数据","17.6 云计算","17.7 物联网","17.8 区块链","17.9 人工智能","17.10 虚拟现实"] },
+        { chap: "18. 信息技术服务", sections: ["18.1 内部与外网","18.2 基础建设","18.3 业务生命周期","18.4 服务标准化","18.5 服务质量评价","18.6 服务发展","18.7 服务集成与实践"] },
+        { chap: "19. 信息系统架构", sections: ["19.1 架构基础","19.2 系统架构","19.3 系统集成常见架构","19.4 云原生架构"] },
+        { chap: "20. 软件工程", sections: ["20.1 架构基础","20.2 系统架构","20.3 系统集成实践","20.4 部署交付","20.5 软件质量管理","20.6 软件过程能力成熟度","20.7 数据安全"] }
     ];
-    const DAYS_PER_TOPIC = 2;      // 每个主题学习2天
-    // 阶段划分（基于主题索引）
-    const PHASE1_END_IDX = 6;       // 前7个主题 → 第一阶段
-    const PHASE2_END_IDX = 13;      // 第8-14个主题 → 第二阶段
-    // 剩余主题 → 第三阶段
-    
-    // 生成日期列表
-    function getDateRange(start, end) {
-        const startArr = start.split('-').map(Number);
-        const endArr = end.split('-').map(Number);
-        const startDate = new Date(startArr[0], startArr[1]-1, startArr[2]);
-        const endDate = new Date(endArr[0], endArr[1]-1, endArr[2]);
-        const dates = [];
-        for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            dates.push(`${year}-${month}-${day}`);
+
+    // 扁平化所有小节，建立映射
+    let allSections = [];
+    chaptersData.forEach(ch => {
+        ch.sections.forEach(s => {
+            allSections.push(s);
+        });
+    });
+    const TOTAL_SECTIONS = allSections.length;
+    document.getElementById('totalCount').innerText = TOTAL_SECTIONS;
+
+    // ---------- 40天计划，每个DAY映射到具体小节ID列表 ----------
+    // 这里按顺序分配，确保覆盖所有小节（每天大约4-5个小节）
+    const dailyPlan = [];
+    let idx = 0;
+    while (idx < TOTAL_SECTIONS) {
+        let batch = [];
+        for (let i = 0; i < 4 && idx < TOTAL_SECTIONS; i++) {
+            batch.push(allSections[idx++]);
         }
-        return dates;
+        dailyPlan.push(batch);
     }
-    
-    const ALL_DATES = getDateRange(START_DATE, END_DATE);
-    const TOTAL_DAYS = ALL_DATES.length;
-    
-    // 显示起止日期
-    document.getElementById('startDateDisplay').innerText = START_DATE;
-    document.getElementById('endDateDisplay').innerText = END_DATE;
-    document.getElementById('totalDays').innerText = TOTAL_DAYS;
-    
-    // 根据日期生成任务描述
-    function generateTaskForDate(dateStr) {
-        const dayIndex = ALL_DATES.indexOf(dateStr);
-        if (dayIndex === -1) return "日期不在计划范围内";
-        
-        const topicLearningDays = TOPICS.length * DAYS_PER_TOPIC;
-        
-        if (dayIndex < topicLearningDays) {
-            const topicIndex = Math.floor(dayIndex / DAYS_PER_TOPIC);
-            const dayInTopic = dayIndex % DAYS_PER_TOPIC;
-            const topic = TOPICS[topicIndex];
-            if (dayInTopic === 0) {
-                return `🎥 观看视频：《${topic}》精讲 · 整理笔记`;
-            } else {
-                return `📖 复习+做题：《${topic}》 · 完成章节练习，整理错题`;
-            }
-        } else {
-            const remainingDays = TOTAL_DAYS - topicLearningDays;
-            const remainingIndex = dayIndex - topicLearningDays;
-            if (remainingIndex < 10) {
-                return `📚 综合复习 · 背诵十大知识领域口诀 · 回顾计算题公式`;
-            } else if (remainingIndex < 16) {
-                const mod = (remainingIndex - 10) % 2;
-                if (mod === 0) {
-                    return `📝 真题模考（选择题） · 限时90分钟，记录错题`;
-                } else {
-                    return `🔍 真题复盘 · 分析错题，强化薄弱点`;
-                }
-            } else {
-                return `⚡ 冲刺背诵 · 考前必背10页纸 · 计算题专项 · 案例分析模板`;
-            }
-        }
+    // 现在 dailyPlan 是一个数组，长度为 ceil(TOTAL_SECTIONS/4)，约40多天，正好覆盖全部
+
+    // ---------- 数据结构 ----------
+    let completed = {};      // key: 小节名, value: { date, difficulty, note, dayCompleted }
+    let streak = 0;
+    let lastDate = null;     // 上次打卡日期 YYYY-MM-DD
+    let dailyHistory = {};   // 按日期记录完成小节数
+    let currentDay = 0;      // 当前推荐的天数索引（0-based）
+
+    // 考试日期
+    const EXAM_DATE = new Date('2026-05-23');
+
+    function formatDate(date) {
+        let d = new Date(date);
+        let year = d.getFullYear();
+        let month = String(d.getMonth() + 1).padStart(2, '0');
+        let day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
-    
-    // 阶段信息（基于实际日期）
-    function getPhaseInfo() {
-        const topicLearningDays = TOPICS.length * DAYS_PER_TOPIC;
-        const phase1EndIdx = (PHASE1_END_IDX + 1) * DAYS_PER_TOPIC - 1;
-        const phase2EndIdx = (PHASE2_END_IDX + 1) * DAYS_PER_TOPIC - 1;
-        const phase1EndDate = ALL_DATES[Math.min(TOTAL_DAYS-1, phase1EndIdx)];
-        const phase2EndDate = ALL_DATES[Math.min(TOTAL_DAYS-1, phase2EndIdx)];
-        const phase3StartDate = ALL_DATES[Math.min(TOTAL_DAYS-1, phase2EndIdx + 1)];
-        
-        const phase1Dates = ALL_DATES.slice(0, phase1EndIdx+1);
-        const phase2Dates = ALL_DATES.slice(phase1EndIdx+1, phase2EndIdx+1);
-        const phase3Dates = ALL_DATES.slice(phase2EndIdx+1);
-        
-        return {
-            phase1: { name: "第一阶段：基础学习", start: START_DATE, end: phase1EndDate, dates: phase1Dates },
-            phase2: { name: "第二阶段：深入学习", start: ALL_DATES[phase1EndIdx+1], end: phase2EndDate, dates: phase2Dates },
-            phase3: { name: "第三阶段：冲刺复习", start: phase3StartDate, end: END_DATE, dates: phase3Dates }
-        };
-    }
-    
-    // 存储
-    const STORAGE_KEY = 'ruankao_checklist_0323';
-    let completedSet = new Set();
-    
-    function loadCompleted() {
-        const stored = localStorage.getItem(STORAGE_KEY);
+    function todayStr() { return formatDate(new Date()); }
+
+    // 加载数据
+    function loadData() {
+        const stored = localStorage.getItem('ruankao_onetap_v1');
         if (stored) {
-            try { completedSet = new Set(JSON.parse(stored)); } catch(e) {}
+            const data = JSON.parse(stored);
+            completed = data.completed || {};
+            streak = data.streak || 0;
+            lastDate = data.lastDate || null;
+            dailyHistory = data.dailyHistory || {};
+            currentDay = data.currentDay || 0;
+        }
+        // 连续打卡检查
+        const today = todayStr();
+        if (lastDate && lastDate !== today) {
+            const yesterday = formatDate(new Date(Date.now() - 86400000));
+            if (lastDate !== yesterday) streak = 0;
+        }
+        if (!lastDate) streak = 0;
+        // 自动推进到第一个未完成的天数
+        while (currentDay < dailyPlan.length && isDayCompleted(currentDay)) {
+            currentDay++;
+        }
+        if (currentDay >= dailyPlan.length) currentDay = dailyPlan.length - 1;
+        saveData();
+    }
+
+    function saveData() {
+        localStorage.setItem('ruankao_onetap_v1', JSON.stringify({
+            completed, streak, lastDate, dailyHistory, currentDay
+        }));
+    }
+
+    // 判断某一天的所有小节是否都已打卡
+    function isDayCompleted(dayIdx) {
+        const sections = dailyPlan[dayIdx];
+        if (!sections) return true;
+        return sections.every(s => completed[s]);
+    }
+
+    // 获取当天未打卡的小节（用于今日任务显示）
+    function getTodaySections() {
+        if (currentDay >= dailyPlan.length) return [];
+        return dailyPlan[currentDay].filter(s => !completed[s]);
+    }
+
+    // 标记小节完成（内部调用，不触发连续打卡逻辑，连续打卡由一键打卡统一处理）
+    function markSectionComplete(section, difficulty, note, dayIdx) {
+        if (!completed[section]) {
+            completed[section] = {
+                date: todayStr(),
+                difficulty: difficulty || null,
+                note: note || '',
+                dayCompleted: dayIdx
+            };
+        } else {
+            if (difficulty) completed[section].difficulty = difficulty;
+            if (note) completed[section].note = note;
         }
     }
-    function saveCompleted() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(completedSet)));
-    }
-    loadCompleted();
-    
-    // 当前显示日期（默认今天，若不在范围内则取开始日）
-    let currentDisplayDate = ALL_DATES.includes(new Date().toISOString().slice(0,10)) 
-        ? new Date().toISOString().slice(0,10) 
-        : START_DATE;
-    
-    function render() {
-        // 整体进度
-        const completedCount = ALL_DATES.filter(d => completedSet.has(d)).length;
-        document.getElementById('completedCount').innerText = completedCount;
-        document.getElementById('overallProgress').style.width = (completedCount / TOTAL_DAYS * 100) + '%';
+
+    // 一键打卡：完成当前日的所有未完成小节
+    function completeToday() {
+        const today = todayStr();
+        // 防止重复打卡同一天
+        if (lastDate === today) {
+            alert('今天已经打卡过了！明天再来吧 🌟');
+            return;
+        }
+        const remaining = getTodaySections();
+        if (remaining.length === 0) {
+            alert('今日任务已经全部完成，继续加油！可点击随机推荐学习其他内容');
+            return;
+        }
+        // 获取用户为每个小节选择的难度和笔记（从界面收集）
+        const difficultyMap = {};
+        const noteMap = {};
+        document.querySelectorAll('.task-item').forEach(item => {
+            const secName = item.getAttribute('data-section');
+            const activeDiff = item.querySelector('.difficulty-btn.active-easy, .difficulty-btn.active-medium, .difficulty-btn.active-hard');
+            if (activeDiff) {
+                if (activeDiff.classList.contains('active-easy')) difficultyMap[secName] = 'easy';
+                else if (activeDiff.classList.contains('active-medium')) difficultyMap[secName] = 'medium';
+                else if (activeDiff.classList.contains('active-hard')) difficultyMap[secName] = 'hard';
+            }
+            const noteInput = item.querySelector('.task-note-input');
+            if (noteInput && noteInput.value.trim()) {
+                noteMap[secName] = noteInput.value.trim();
+            }
+        });
+        const globalNote = document.getElementById('globalNote').value.trim();
         
-        // 阶段卡片
-        const phases = getPhaseInfo();
-        const phaseCardsDiv = document.getElementById('phaseCards');
-        phaseCardsDiv.innerHTML = '';
-        [phases.phase1, phases.phase2, phases.phase3].forEach((phase, idx) => {
-            const total = phase.dates.length;
-            const completed = phase.dates.filter(d => completedSet.has(d)).length;
-            const percent = total === 0 ? 0 : (completed / total * 100);
-            const activeClass = (currentDisplayDate >= phase.start && currentDisplayDate <= phase.end) ? 'active' : '';
-            const card = document.createElement('div');
-            card.className = `phase-card ${activeClass}`;
-            card.innerHTML = `
-                <div class="phase-name">${phase.name}</div>
-                <div class="phase-dates">${phase.start.slice(5)} ~ ${phase.end.slice(5)}</div>
-                <div class="phase-progress-bg"><div class="phase-progress-fill" style="width:${percent}%"></div></div>
-                <div class="phase-count">${completed}/${total}天</div>
-            `;
-            phaseCardsDiv.appendChild(card);
+        // 标记每个小节为完成
+        remaining.forEach(sec => {
+            const diff = difficultyMap[sec] || null;
+            const note = noteMap[sec] || globalNote || '';
+            markSectionComplete(sec, diff, note, currentDay);
         });
         
-        // 当前日期显示
-        document.getElementById('currentDateLabel').innerText = currentDisplayDate;
+        // 更新每日统计
+        if (!dailyHistory[today]) dailyHistory[today] = 0;
+        dailyHistory[today] += remaining.length;
         
-        // 任务卡片
-        const taskContainer = document.getElementById('taskContainer');
-        if (!ALL_DATES.includes(currentDisplayDate)) {
-            taskContainer.innerHTML = `<div class="out-of-range">📅 日期不在计划范围内</div>`;
+        // 连续打卡逻辑
+        if (lastDate !== today) {
+            const yesterday = formatDate(new Date(Date.now() - 86400000));
+            if (lastDate === yesterday) streak++;
+            else if (lastDate === null) streak = 1;
+            else streak = 1;
+            lastDate = today;
+        }
+        
+        // 如果当天任务全部完成，自动推进到下一天
+        if (isDayCompleted(currentDay)) {
+            currentDay++;
+            while (currentDay < dailyPlan.length && isDayCompleted(currentDay)) currentDay++;
+        }
+        
+        saveData();
+        renderAll();
+        alert(`✅ 打卡成功！今日完成 ${remaining.length} 个小节，连续打卡 ${streak} 天`);
+    }
+
+    // 随机推荐未完成的小节（不打卡，仅跳转）
+    function randomRecommend() {
+        const undone = allSections.filter(s => !completed[s]);
+        if (undone.length === 0) {
+            alert('恭喜！你已经完成所有章节！');
+            return;
+        }
+        const randomSec = undone[Math.floor(Math.random() * undone.length)];
+        scrollToSection(randomSec);
+    }
+
+    // 获取需要复习的小节（艾宾浩斯）
+    function getReviewSections() {
+        const today = new Date();
+        const reviews = [];
+        for (let [sec, record] of Object.entries(completed)) {
+            const doneDate = new Date(record.date);
+            const diffDays = Math.floor((today - doneDate) / (1000 * 60 * 60 * 24));
+            if ([1, 3, 7, 14, 30].includes(diffDays)) {
+                reviews.push(sec);
+            }
+        }
+        return reviews;
+    }
+
+    // 渲染今日任务卡片
+    function renderTodayCard() {
+        const todaySections = getTodaySections();
+        const isDoneToday = (lastDate === todayStr());
+        const checkBtn = document.getElementById('checkBtn');
+        if (isDoneToday) {
+            checkBtn.disabled = true;
+            checkBtn.textContent = '✅ 今日已完成打卡';
         } else {
-            const taskDesc = generateTaskForDate(currentDisplayDate);
-            const isChecked = completedSet.has(currentDisplayDate);
-            const checkClass = isChecked ? 'checked' : '';
-            const checkMark = isChecked ? '✓' : '';
-            taskContainer.innerHTML = `
-                <div class="task-card">
-                    <div class="task-date">
-                        <span class="task-icon">📌</span> ${currentDisplayDate} 的学习任务
-                    </div>
-                    <div class="task-desc">${taskDesc}</div>
-                    <div class="check-area">
-                        <span class="checkbox ${checkClass}" id="checkBtn">${checkMark}</span>
-                        <span class="check-label">标记今日已完成</span>
-                    </div>
+            checkBtn.disabled = false;
+            checkBtn.textContent = '✅ 一键完成今日打卡';
+        }
+        if (currentDay >= dailyPlan.length) {
+            document.getElementById('todayTitle').innerText = '🎉 恭喜！全部章节已学完';
+            document.getElementById('todayDesc').innerText = '你已经完成了所有学习内容，可以复习或刷题';
+            document.getElementById('taskList').innerHTML = '<div style="text-align:center; padding:20px;">🎉 完美通关！</div>';
+            return;
+        }
+        const dayNum = currentDay + 1;
+        const firstSec = dailyPlan[currentDay][0];
+        const chapPrefix = firstSec.split(' ')[0];
+        document.getElementById('todayTitle').innerHTML = `DAY ${dayNum} - ${chapPrefix}`;
+        document.getElementById('todayDesc').innerHTML = `今日任务：${todaySections.length} 个小节`;
+        
+        const taskContainer = document.getElementById('taskList');
+        taskContainer.innerHTML = '';
+        todaySections.forEach(sec => {
+            const record = completed[sec];
+            const currentDiff = record?.difficulty || null;
+            const currentNote = record?.note || '';
+            const div = document.createElement('div');
+            div.className = 'task-item';
+            div.setAttribute('data-section', sec);
+            div.innerHTML = `
+                <div class="task-name">${sec}</div>
+                <div class="task-difficulty">
+                    <button class="difficulty-btn ${currentDiff === 'easy' ? 'active-easy' : ''}" data-diff="easy">😊</button>
+                    <button class="difficulty-btn ${currentDiff === 'medium' ? 'active-medium' : ''}" data-diff="medium">🤔</button>
+                    <button class="difficulty-btn ${currentDiff === 'hard' ? 'active-hard' : ''}" data-diff="hard">😰</button>
                 </div>
+                <button class="note-icon" title="记录笔记">📝</button>
+                <input type="text" class="task-note-input" placeholder="笔记" value="${escapeHtml(currentNote)}" style="width:120px; font-size:11px; padding:4px; border-radius:8px; border:1px solid #cbd5e1;">
             `;
-            const checkBtn = document.getElementById('checkBtn');
-            checkBtn.addEventListener('click', () => {
-                // 记录点击前的状态
-                const wasChecked = completedSet.has(currentDisplayDate);
-                
-                if (wasChecked) {
-                    // 取消打卡：移除标记，不跳转
-                    completedSet.delete(currentDisplayDate);
-                    saveCompleted();
-                    render();
-                } else {
-                    // 新打卡：添加标记
-                    completedSet.add(currentDisplayDate);
-                    saveCompleted();
-                    // 自动跳转到下一天（如果存在）
-                    const currentIdx = ALL_DATES.indexOf(currentDisplayDate);
-                    if (currentIdx !== -1 && currentIdx + 1 < ALL_DATES.length) {
-                        currentDisplayDate = ALL_DATES[currentIdx + 1];
+            // 难度按钮事件
+            const btns = div.querySelectorAll('.difficulty-btn');
+            btns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const diff = btn.getAttribute('data-diff');
+                    // 清除同组其他active
+                    div.querySelectorAll('.difficulty-btn').forEach(b => {
+                        b.classList.remove('active-easy', 'active-medium', 'active-hard');
+                    });
+                    btn.classList.add(`active-${diff}`);
+                    // 实时保存难度（可选）
+                    if (completed[sec]) {
+                        completed[sec].difficulty = diff;
+                        saveData();
                     }
-                    render();
+                });
+            });
+            // 笔记图标弹窗（也可使用输入框）
+            const noteIcon = div.querySelector('.note-icon');
+            noteIcon.addEventListener('click', () => {
+                const newNote = prompt('记录笔记（关键词、重点）:', currentNote);
+                if (newNote !== null) {
+                    const inputField = div.querySelector('.task-note-input');
+                    inputField.value = newNote;
+                    if (completed[sec]) {
+                        completed[sec].note = newNote;
+                        saveData();
+                    }
                 }
             });
-        }
-        
-        // 日期导航
-        const prevBtn = document.getElementById('prevDay');
-        const nextBtn = document.getElementById('nextDay');
-        const newPrev = prevBtn.cloneNode(true);
-        const newNext = nextBtn.cloneNode(true);
-        prevBtn.parentNode.replaceChild(newPrev, prevBtn);
-        nextBtn.parentNode.replaceChild(newNext, nextBtn);
-        newPrev.addEventListener('click', () => {
-            const idx = ALL_DATES.indexOf(currentDisplayDate);
-            if (idx > 0) currentDisplayDate = ALL_DATES[idx - 1];
-            render();
-        });
-        newNext.addEventListener('click', () => {
-            const idx = ALL_DATES.indexOf(currentDisplayDate);
-            if (idx < ALL_DATES.length - 1) currentDisplayDate = ALL_DATES[idx + 1];
-            render();
+            // 输入框实时保存
+            const noteInput = div.querySelector('.task-note-input');
+            noteInput.addEventListener('change', () => {
+                if (completed[sec]) {
+                    completed[sec].note = noteInput.value;
+                    saveData();
+                }
+            });
+            taskContainer.appendChild(div);
         });
     }
-    
-    // 重置
-    document.getElementById('resetBtn').addEventListener('click', () => {
-        if (confirm('确定重置所有打卡记录吗？此操作不可撤销。')) {
-            completedSet = new Set();
-            saveCompleted();
-            render();
+
+    // 渲染章节目录（只读状态，显示已完成标记）
+    function renderChapters() {
+        const container = document.getElementById('chaptersContainer');
+        container.innerHTML = '';
+        chaptersData.forEach(ch => {
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'chapter-group';
+            const header = document.createElement('div');
+            header.className = 'chapter-header';
+            const doneCountInChap = ch.sections.filter(s => completed[s]).length;
+            header.innerHTML = `<span>${ch.chap}</span><span class="chapter-stats">${doneCountInChap}/${ch.sections.length}</span>`;
+            header.onclick = () => {
+                const listDiv = groupDiv.querySelector('.section-list');
+                listDiv.classList.toggle('open');
+            };
+            groupDiv.appendChild(header);
+            const listDiv = document.createElement('div');
+            listDiv.className = 'section-list';
+            ch.sections.forEach(section => {
+                const isDone = !!completed[section];
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'section-item';
+                itemDiv.id = `sec-${section.replace(/\./g, '')}`;
+                itemDiv.innerHTML = `
+                    <div class="section-name">${section}</div>
+                    <div class="section-status ${isDone ? 'done' : ''}">${isDone ? '✓' : ''}</div>
+                `;
+                listDiv.appendChild(itemDiv);
+            });
+            groupDiv.appendChild(listDiv);
+            container.appendChild(groupDiv);
+        });
+    }
+
+    function renderAll() {
+        const doneCount = Object.keys(completed).length;
+        document.getElementById('doneCount').innerText = doneCount;
+        document.getElementById('streak').innerText = streak;
+        const reviews = getReviewSections();
+        document.getElementById('reviewCount').innerText = reviews.length;
+        if (reviews.length > 0) {
+            document.getElementById('reviewBox').style.display = 'block';
+            const reviewListDiv = document.getElementById('reviewList');
+            reviewListDiv.innerHTML = reviews.map(r => `<span class="review-item" onclick="scrollToSection('${r}')">${r}</span>`).join('');
+        } else {
+            document.getElementById('reviewBox').style.display = 'none';
         }
-    });
-    
-    render();
-})();
+        document.getElementById('badge3').classList.toggle('unlocked', streak >= 3);
+        document.getElementById('badge7').classList.toggle('unlocked', streak >= 7);
+        document.getElementById('badge21').classList.toggle('unlocked', streak >= 21);
+        document.getElementById('badgeAll').classList.toggle('unlocked', doneCount === TOTAL_SECTIONS);
+        
+        renderTodayCard();
+        renderChapters();
+        renderNotesHistory();
+        renderChart();
+    }
+
+    function renderNotesHistory() {
+        const notesArray = Object.entries(completed).filter(([_, rec]) => rec.note && rec.note.trim() !== '').map(([id, rec]) => ({ id, note: rec.note, date: rec.date }));
+        notesArray.sort((a,b) => new Date(b.date) - new Date(a.date));
+        const container = document.getElementById('noteHistory');
+        if (notesArray.length === 0) {
+            container.innerHTML = '<div style="color:#94a3b8; text-align:center;">暂无笔记，点击📝记录学习心得</div>';
+        } else {
+            container.innerHTML = notesArray.slice(0, 10).map(n => `
+                <div class="note-entry">
+                    <div class="note-title">${n.id}</div>
+                    <div class="note-text">${escapeHtml(n.note)}</div>
+                    <div style="font-size:10px; color:#94a3b8;">${n.date}</div>
+                </div>
+            `).join('');
+        }
+    }
+
+    let chartInstance = null;
+    function renderChart() {
+        const dates = [];
+        const counts = [];
+        const today = new Date();
+        for (let i = 29; i >= 0; i--) {
+            const d = new Date(today);
+            d.setDate(today.getDate() - i);
+            const dateStr = formatDate(d);
+            dates.push(dateStr);
+            counts.push(dailyHistory[dateStr] || 0);
+        }
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        if (chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: '每日完成章节数',
+                    data: counts,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59,130,246,0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: { y: { beginAtZero: true, title: { display: true, text: '章节数' } } }
+            }
+        });
+    }
+
+    function scrollToSection(sectionId) {
+        const el = document.getElementById(`sec-${sectionId.replace(/\./g, '')}`);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.style.backgroundColor = '#fef9c3';
+            setTimeout(() => el.style.backgroundColor = '', 1500);
+        }
+    }
+
+    function updateCountdown() {
+        const now = new Date();
+        const diff = EXAM_DATE - now;
+        const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+        document.getElementById('countdown').innerText = days > 0 ? `${days} 天` : '考试日';
+        document.getElementById('examDate').innerText = `考试日期：${EXAM_DATE.toLocaleDateString('zh-CN')}`;
+    }
+
+    function exportData() {
+        const dataStr = JSON.stringify({ completed, streak, lastDate, dailyHistory, currentDay }, null, 2);
+        const blob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ruankao_backup_${todayStr()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        alert('已导出学习数据');
+    }
+
+    function resetAll() {
+        if (confirm('⚠️ 重置所有进度，不可恢复。确定吗？')) {
+            localStorage.removeItem('ruankao_onetap_v1');
+            completed = {};
+            streak = 0;
+            lastDate = null;
+            dailyHistory = {};
+            currentDay = 0;
+            saveData();
+            renderAll();
+            alert('已重置');
+        }
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // 绑定事件
+    document.getElementById('checkBtn').addEventListener('click', completeToday);
+    document.getElementById('randomBtn').addEventListener('click', randomRecommend);
+    document.getElementById('exportBtn').addEventListener('click', exportData);
+    document.getElementById('resetBtn').addEventListener('click', resetAll);
+    window.scrollToSection = scrollToSection;
+
+    loadData();
+    updateCountdown();
+    renderAll();
+    setInterval(updateCountdown, 86400000);
 </script>
 </body>
 </html>
